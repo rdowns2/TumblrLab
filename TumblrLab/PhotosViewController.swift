@@ -7,13 +7,17 @@
 //
 
 import UIKit
+import AlamofireImage
 
 class PhotosViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var photoCellOutlet: UIView!
     @IBOutlet weak var tableViewOutlet: UITableView!
     
+    
     var posts: [[String: Any]] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +42,7 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
                 // Store the returned array of dictionaries in our posts property
                 self.posts = responseDictionary["posts"] as! [[String: Any]]
                 // TODO: Reload the table view
+                self.tableView.reloadData()
             }
         }
         task.resume()
@@ -50,22 +55,32 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
-        cell.textLabel?.text = "This is row \(indexPath.row)"
+        
+        //cell.textLabel?.text = "This is row \(indexPath.row)"
+        
+        
         let post = posts[indexPath.row]
+        
         if let photos = post["photos"] as? [[String: Any]] {
             // photos is NOT nil, we can use it!
+            // TODO: Get the photo url
             let photo = photos[0]
             let originalSize = photo["original_size"] as! [String: Any]
             let urlString = originalSize["url"] as! String
             let url = URL(string: urlString)
+            cell.picView.af_setImage(withURL: url!)
+            
+            
         }
+        
         return cell
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    private func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "PhotoCell") as! PhotoCell
         
-        // Configure YourCustomCell using the outlets that you've defined.
+        // Configure YourCustomCell using the outlets that you've defined
         
         return cell
     }
