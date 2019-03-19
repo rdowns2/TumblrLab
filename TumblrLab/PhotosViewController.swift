@@ -48,6 +48,11 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
         task.resume()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
+        var photoViewController = segue.destination as! PhotosDetailsViewController
+        photoViewController.image = self.imageView.image
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return posts.count
     }
